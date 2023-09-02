@@ -1,0 +1,86 @@
+ <form [formGroup]="employeeForm" (ngSubmit)="addEmployee()">
+    <label class="form-label" for="employeeName">Employee Name:</label>
+    <input
+      type="text"
+      class="form-control"
+      id="employeeName"
+      required
+      formControlName="name"
+    />
+    <div
+      *ngIf="
+        employeeForm.controls['name'].invalid &&
+        employeeForm.controls['name'].touched
+      "
+      class="text-danger"
+    >
+      Employee Name is required.
+    </div>
+
+    <label class="form-label" for="department">Department:</label>
+    <textarea
+      class="form-control"
+      id="department"
+      formControlName="department"
+    ></textarea>
+    <div
+      *ngIf="
+        employeeForm.controls['department'].invalid &&
+        employeeForm.controls['department'].touched
+      "
+      class="text-danger"
+    >
+      Employee department is required.
+    </div>
+
+    <label class="form-label" for="salary">Salary:</label>
+    <input
+      class="form-control"
+      type="number"
+      id="salary"
+      formControlName="salary"
+    />
+    <div
+      *ngIf="
+        employeeForm.controls['salary'].invalid &&
+        employeeForm.controls['salary'].touched
+      "
+      class="text-danger"
+    >
+      Employee salary is required.
+    </div>
+    <br />
+    <button
+      type="submit"
+      [disabled]="employeeForm.invalid"
+      class="btn btn-success"
+    >
+      Add Employee
+    </button>
+  </form>
+
+
+*
+********Ts file********
+  ngOnInit() {
+    this.initForm();
+    this.employees = this.employeeService.getEmployees();
+  }
+  initForm() {
+    this.employeeForm = this.formBuilder.group({
+      name: ['', Validators.required], 
+      department: ['', Validators.required], 
+      salary: [0, Validators.required], 
+    });
+  }
+
+  addEmployee() {
+    this.newEmployee.name = this.employeeForm.controls['name'].value;
+    this.newEmployee.salary = this.employeeForm.controls['salary'].value;
+    this.newEmployee.department =
+      this.employeeForm.controls['department'].value;
+
+    this.employeeService.addEmployee({ ...this.newEmployee });
+    this.newEmployee = { name: '', department: '', salary: 0 };
+    alert('added');
+  }
